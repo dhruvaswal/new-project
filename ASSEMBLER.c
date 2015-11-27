@@ -75,3 +75,76 @@ fclose(fp1);
   
   fclose(fp2);
   fclose(fp3);
+ fp4=fopen("ASSMLIST.txt","w");
+  fp5=fopen("SYMTAB.txt","r");
+  fp6=fopen("process.txt","r");
+  fp7=fopen("OBJCODE.txt","w");
+  fscanf(fp6,"%s%s%s",label,opcode,operand);
+  while(strcmp(opcode,"END")!=0)
+  {
+   prevaddr=address;
+   fscanf(fp6,"%d%s%s%s",&address,label,opcode,operand);
+  }
+  finaddr=address;
+  fclose(fp6);
+  fp6=fopen("process.txt","r");
+  fscanf(fp6,"%s%s%s",label,opcode,operand);
+  if(strcmp(opcode,"START")==0)
+  {
+   fprintf(fp4,"\t%s\t%s\t%s\n",label,opcode,operand);
+   fprintf(fp7,"H^%s^00%s^00%d\n",label,operand,finaddr);
+   fscanf(fp6,"%d%s%s%s",&address,label,opcode,operand);
+   st=address;
+   diff=prevaddr-st;
+   fprintf(fp7,"T^00%d^%d",address,diff);
+  }
+  while(strcmp(opcode,"END")!=0)
+  {
+   if(strcmp(opcode,"BYTE")==0)
+   {
+    fprintf(fp4,"%d\t%s\t%s\t%s\t",address,label,opcode,operand);
+    len=strlen(operand);
+    actual_len=len-3;
+    fprintf(fp7,"^");
+    for(k=2;k<(actual_len+2);k++)
+    {
+     itoa(operand[k],ad,16);
+     fprintf(fp4,"%s",ad);
+     fprintf(fp7,"%s",ad);
+    }
+    fprintf(fp4,"\n");
+   }
+   else if(strcmp(opcode,"WORD")==0)
+   {
+    len=strlen(operand);
+    itoa(atoi(operand),a,10);
+    fprintf(fp4,"%d\t%s\t%s\t%s\t00000%s\n",address,label,opcode,operand,a);
+    fprintf(fp7,"^00000%s",a);
+   }
+   else if((strcmp(opcode,"RESB")==0)||(strcmp(opcode,"RESW")==0))
+    fprintf(fp4,"%d\t%s\t%s\t%s\n",address,label,opcode,operand);
+   else
+   {
+    while(strcmp(opcode,mnemonic1[l])!=0)
+     l++;
+    if(strcmp(operand,"COPY")==0)
+     fprintf(fp4,"%d\t%s\t%s\t%s\t%s0000\n",address,label,opcode,operand,code1[l]);
+    else
+    {
+     rewind(fp5);
+     fscanf(fp5,"%s%d",symbol,&add);
+      while(strcmp(operand,symbol)!=0)
+       fscanf(fp5,"%s%d",symbol,&add);
+     fprintf(fp4,"%d\t%s\t%s\t%s\t%s%d\n",address,label,opcode,operand,code1[l],add);
+     fprintf(fp7,"^%s%d",code1[l],add);
+    }
+   }
+   fscanf(fp6,"%d%s%s%s",&address,label,opcode,operand);
+  }
+  fprintf(fp4,"%d\t%s\t%s\t%s\n",address,label,opcode,operand);
+  fprintf(fp7,"\nE^00%d",st);
+  printf("\nObject Program has been generated.");
+  fclose(fp4);
+  fclose(fp5);
+  fclose(fp6);
+  fclose(fp7);
