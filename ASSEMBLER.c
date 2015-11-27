@@ -55,3 +55,23 @@ void main()
 fclose(fp1);
   fclose(fp2);
   fclose(fp3);
+  printf("\n\nThe contents of Input file:\n\n");
+  fp1=fopen("INPUT.txt","r");
+  ch=fgetc(fp1);
+  while(ch!=EOF)
+   {
+    printf("%c",ch);
+    ch=fgetc(fp1);
+   }
+   printf("\n\nThe contents of Symbol Table:\n\n");
+  fp2=fopen("SYMTAB.txt","r");
+  ch=fgetc(fp2);
+  while(ch!=EOF)
+   {
+    printf("%c",ch);
+    ch=fgetc(fp2);
+   }
+  fclose(fp1);
+  
+  fclose(fp2);
+  fclose(fp3);
