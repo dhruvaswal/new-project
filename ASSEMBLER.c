@@ -148,3 +148,23 @@ fclose(fp1);
   fclose(fp5);
   fclose(fp6);
   fclose(fp7);
+printf("\n\nprocess file:\n\n");
+  fp6=fopen("process.txt","r");
+  ch=fgetc(fp6);
+  while(ch!=EOF)
+  {
+   printf("%c",ch);
+   ch=fgetc(fp6);
+  }
+  fclose(fp6);
+  printf("\n\nObject Program:\n\n");
+  fp7=fopen("OBJCODE.txt","r");
+  ch=fgetc(fp7);
+  while(ch!=EOF)
+  {
+   printf("%c",ch);
+   ch=fgetc(fp7);
+  }
+  fclose(fp7);
+  getch();
+}
